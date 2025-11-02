@@ -77,12 +77,7 @@ public class Main {
                 gradientMode(GraphGradientMode.SCHEME).
                 lineInterpolation(LineInterpolation.SMOOTH).
                 fillOpacity(7.0).
-                thresholds(new ThresholdsConfigBuilder()
-                        .mode(ThresholdsMode.PERCENTAGE)
-                        .steps(List.of(
-                                new Threshold(0.0, "green"),
-                                new Threshold(50.0, "yellow"),
-                                new Threshold(80.0, "red")))).
+                thresholds(getThresholdsBuilder()).
                 withTarget(new DataqueryBuilder().
                         datasource(new DataSourceRef("prometheus", "DS_PROMETHEUS_UID")).
                         expr("avg by(instance) (cpu_usage{instance=\"server1\"})").
@@ -106,12 +101,7 @@ public class Main {
                 unit("percent").
                 min(0.0).
                 max(100.0).
-                thresholds(new ThresholdsConfigBuilder()
-                        .mode(ThresholdsMode.PERCENTAGE)
-                        .steps(List.of(
-                                new Threshold(0.0, "green"),
-                                new Threshold(60.0, "yellow"),
-                                new Threshold(80.0, "red")))).
+                thresholds(getThresholdsBuilder()).
                 withTarget(new DataqueryBuilder().
                         datasource(new DataSourceRef("prometheus", "DS_PROMETHEUS_UID")).
                         expr("cpu_usage{instance=\"server1\"}").
@@ -119,5 +109,19 @@ public class Main {
                 ).reduceOptions(new ReduceDataOptionsBuilder()
                         .calcs(List.of("lastNotNull"))
                         .values(false));
+    }
+
+    /**
+     * Creates a threshold builder
+     *
+     * @return a configured {@link ThresholdsConfigBuilder} instance
+     */
+    public static ThresholdsConfigBuilder getThresholdsBuilder() {
+        return new ThresholdsConfigBuilder()
+                .mode(ThresholdsMode.PERCENTAGE)
+                .steps(List.of(
+                        new Threshold(0.0, "green"),
+                        new Threshold(60.0, "yellow"),
+                        new Threshold(80.0, "red")));
     }
 }
